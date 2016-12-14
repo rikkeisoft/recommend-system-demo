@@ -1,0 +1,35 @@
+language: php
+
+php:
+- 7.0
+
+sudo: false
+
+addons:
+  mariadb: '10.1'
+
+before_install:
+- composer self-update
+
+install:
+- composer install
+- composer require satooshi/php-coveralls '~1.0' --dev
+
+before_script:
+- mysql -u root -e 'CREATE DATABASE IF NOT EXISTS testdb;'
+- composer run-script post-root-package-install
+- composer run-script post-create-project-cmd
+#- sed -i "s/DB_HOST=.*/DB_HOST=localhost/g;s/DB_PORT=.*/DB_PORT=3306/g" .env
+- sed -i "s/DB_DATABASE=.*/DB_DATABASE=testdb/g;s/DB_USERNAME=.*/DB_USERNAME=root/g;s/DB_PASSWORD=.*/DB_PASSWORD=/g" .env
+- php artisan migrate --force --seed
+
+script:
+- php vendor/bin/phpcs
+- php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+- php vendor/bin/coveralls -v
+
+#notifications:
+#  slack:
+#    secure: 
