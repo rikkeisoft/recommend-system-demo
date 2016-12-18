@@ -9,6 +9,7 @@ node_modules
 public/storage
 storage/debugbar
 composer.phar
+*.log
 
 # IDE and editor specific files #
 #################################
