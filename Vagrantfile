@@ -21,7 +21,7 @@ my_env = {
   :cf_basic_auth_password   => "devpass"           ,
 
   # configuration for php-fpm service
-  :cf_php_fpm_listen        => "127.0.0.1:9000"    ,
+  :cf_php_fpm_listen        => "/run/php/php7.0-fpm.sock",
 
   # configuration for mysqld service
   :cf_mariadb_root_password => "rootpass"          ,
@@ -55,16 +55,16 @@ Vagrant.configure("2") do |config|
   end
 
   # Setting forwarded port
-  if my_env[:cf_host_port_ssh] then 
+  if my_env[:cf_host_port_ssh] then
     config.vm.network "forwarded_port", guest: 22, host: my_env[:cf_host_port_ssh], id: "ssh"
   end
-  if my_env[:cf_host_port_http] then 
+  if my_env[:cf_host_port_http] then
     config.vm.network "forwarded_port", guest: my_env[:cf_http_port], host: my_env[:cf_host_port_http], id: "http"
   end
-  if my_env[:cf_host_port_mariadb] then 
+  if my_env[:cf_host_port_mariadb] then
     config.vm.network "forwarded_port", guest: my_env[:cf_mariadb_port], host: my_env[:cf_host_port_mariadb], id: "mariadb", disabled: !my_env[:cf_mariadb_remote_access]
   end
-  if my_env[:cf_host_port_ssh] then 
+  if my_env[:cf_host_port_ssh] then
     config.vm.network "forwarded_port", guest: my_env[:cf_redis_port], host: my_env[:cf_host_port_redis], id: "redis", disabled: !my_env[:cf_redis_remote_access]
   end
 
@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
   if my_env[:cf_private_ip] then
     config.vm.network "private_network", ip: my_env[:cf_private_ip]
   end
-  
+
   # Setting public ip
   if my_env[:cf_public_ip] then
     config.vm.network "public_network", ip: my_env[:cf_public_ip]
@@ -92,8 +92,8 @@ Vagrant.configure("2") do |config|
   end
 
   # Provision scripts
-  my_scripts.each do |script| 
-    config.vm.provision :shell, :path => "./script/" + script, :privileged => false, :env => my_env, :name => script 
+  my_scripts.each do |script|
+    config.vm.provision :shell, :path => "./script/" + script, :privileged => false, :env => my_env, :name => script
   end
 
   config.vm.provider "virtualbox" do |vb|

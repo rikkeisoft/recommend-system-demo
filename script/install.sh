@@ -2,6 +2,7 @@
 
 [[ ! -z $cf_hostname ]] && export cf_hostname="bookstore.dev"
 [[ ! -z $cf_timezone ]] && export cf_timezone="UTC"
+[[ ! -z $cf_mariadb_root_password ]] && export cf_mariadb_root_password="rootpass"
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -24,7 +25,7 @@ sudo ufw --force enable
 
 echo ">> Install common packages"
 sudo apt-get update -qq
-sudo apt-get install -qq curl nmap tree git make gcc wget openssl
+sudo apt-get install -qq software-properties-common debconf-utils curl wget tree nmap unzip
 
 echo ">> Install NGINX"
 sudo apt-get install -qq nginx
@@ -32,10 +33,39 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 sudo ufw allow 80
 
+# install mariadb
+sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password password $cf_mariadb_root_password"
+sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password_again password $cf_mariadb_root_password"
 echo ">> Install MariaDB"
-sudo apt-get install -qq mariadb-server
+sudo apt-get install -qq mariadb-server mariadb-client
 sudo systemctl start mysql
 sudo systemctl enable mysql
+
+# allow remote access (required to access from our private network host. Note that this is completely insecure if used in any other way)
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
+mysql -u root -p$cf_mariadb_root_password -e "DROP DATABASE IF EXISTS test;"
+mysql -u root -p$cf_mariadb_root_password -e "FLUSH PRIVILEGES;"
+# Fix MariaDB login issue when it says - Access denied for user 'root'@'localhost'
+mysql -u root -p$cf_mariadb_root_password -D mysql -e "UPDATE user SET plugin='' WHERE user='root'; FLUSH PRIVILEGES;"
+
+echo ">> Install Redis"
+sudo apt-get install -qq redis-server
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+
+echo ">> Install PHP7.0"
+sudo apt-get install -qq php-fpm php-cli php-common php-mbstring php-xml php-curl php-mcrypt php-redis
+sudo systemctl start php7.0-fpm
+sudo systemctl enable php7.0-fpm
+
+echo ">> Install Composer"
+curl -sSL https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+sudo chmod a+x /usr/local/bin/composer
+
+echo ">> Install Adminer"
+curl -sSL https://github.com/vrana/adminer/releases/download/v4.2.5/adminer-4.2.5-mysql-en.php -o /app/source/public/_db.php
 
 if [[ $cf_mariadb_remote_access == true ]]
 then
@@ -43,12 +73,8 @@ then
   sudo sed -i "s/^port\s*=.*/port=$cf_mariadb_port/" /etc/mysql/mariadb.conf.d/50-server.cnf
   sudo sed -i "s/^bind\-address\s*=.*/bind-address=0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf
   sudo ufw allow $cf_mariadb_port
+  sudo systemctl restart mysql
 fi
-
-echo ">> Install Redis"
-sudo apt-get install -qq redis-server
-sudo systemctl start redis-server
-sudo systemctl enable redis-server
 
 if [[ $cf_redis_remote_access == true ]]
 then
@@ -56,23 +82,42 @@ then
   sudo sed -i "s/^port\s*6379$/port $cf_redis_port/" /etc/redis/redis.conf
   sudo sed -i "s/^bind\s*127.0.0.1$/bind 0.0.0.0/" /etc/redis/redis.conf
   sudo ufw allow $cf_redis_port
+  sudo systemctl restart redis-server
 fi
 
-echo ">> Install PHP7.0"
-sudo apt-get install -qq php-fpm php-cli php-common php-mbstring php-xml php-curl php-mcrypt php-redis
-sudo systemctl start php7.0-fpm
-sudo systemctl enable php7.0-fpm
+# TODO: set listen from IP of Unix Socket
+echo ">> Configure and secure PHP"
+PHP_FPM_CONF_PATH=/etc/php/7.0/fpm
+sudo sed -i "s/^;date\.timezone\s*=.*/date.timezone=$cf_timezone/" $PHP_FPM_CONF_PATH/php.ini && \
+sudo sed -i "s/^;cgi\.fix_pathinfo\s*=.*/cgi.fix_pathinfo=0/" $PHP_FPM_CONF_PATH/php.ini && \
+sudo sed -i "s/^short_open_tag\s*=.*/short_open_tag=On/" $PHP_FPM_CONF_PATH/php.ini && \
+sudo sed -i "s/^;daemonize\s*=.*/daemonize=no/" $PHP_FPM_CONF_PATH/php-fpm.conf && \
+#sudo sed -i "s/^listen\s*=.*/listen=$cf_php_fpm_listen/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+#sudo sed -i "s/^user\s*=.*/user=$cf_http_user/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+#sudo sed -i "s/^group\s*=.*/group=$cf_http_group/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+sudo sed -i "s/^listen\.allowed_clients\s*=.*/listen.allowed_clients=127.0.0.1/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+sudo sed -i "s/^;catch_workers_output\s*=.*/catch_workers_output=yes/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+sudo sed -i "s/^php_admin_flag\[log_errors\]\s*=.*/;php_admin_flag[log_errors] =/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+sudo sed -i "s/^php_admin_value\[error_log\]\s*=.*/;php_admin_value[error_log] =/" $PHP_FPM_CONF_PATH/pool.d/www.conf && \
+sudo sed -i "s/^;php_admin_value\[display_errors\]\s*=.*/php_admin_value[display_errors] = 'stderr'/" $PHP_FPM_CONF_PATH/pool.d/www.conf
+sudo systemctl restart php7.0-fpm
 
-#sed /etc/php/7.0/fpm/pool.d/www.conf
-#listen /run/php/php7.0-fpm.sock
-
+echo ">> Configure NGINX vhost"
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo cp -f /vagrant/script/nginx_vhost.conf /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
 
-echo ">> Install Composer"
-curl -sSL https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-sudo chmod a+x /usr/local/bin/composer
+echo ">> Create database"
+mysql -u root -p$cf_mariadb_root_password -e "CREATE DATABASE IF NOT EXISTS 'homestead';"
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON 'homestead'.* TO 'homestead'@'%' IDENTIFIED BY 'secret';"
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON 'homestead'.* TO 'homestead'@'localhost' IDENTIFIED BY 'secret';"
 
+echo ">> Setup application"
+cd /app/source
+composer install
+composer run-script post-root-package-install
+composer run-script post-create-project-cmd
+php artisan migrate --force --seed
+
+echo ">> Cleanup"
 sudo apt-get autoremove -qq
