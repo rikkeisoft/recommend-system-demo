@@ -24,38 +24,36 @@ sudo ufw allow proto tcp from any to any port 22
 sudo ufw --force enable
 
 echo ">> Install common packages"
-sudo apt-get update -qq
-sudo apt-get install -qq software-properties-common debconf-utils curl wget tree nmap unzip
+sudo apt-get update -y
+sudo apt-get install -y git curl wget tree nmap unzip
 
 echo ">> Install NGINX"
-sudo apt-get install -qq nginx
+sudo apt-get install -y nginx
 sudo systemctl start nginx
 sudo systemctl enable nginx
 sudo ufw allow 80
 
 # install mariadb
-sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password password $cf_mariadb_root_password"
-sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password_again password $cf_mariadb_root_password"
 echo ">> Install MariaDB"
-sudo apt-get install -qq mariadb-server mariadb-client
+sudo apt-get install -y mariadb-server mariadb-client
 sudo systemctl start mysql
 sudo systemctl enable mysql
 
 # allow remote access (required to access from our private network host. Note that this is completely insecure if used in any other way)
-mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
-mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
+sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
+sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '$cf_mariadb_root_password' WITH GRANT OPTION;"
 mysql -u root -p$cf_mariadb_root_password -e "DROP DATABASE IF EXISTS test;"
 mysql -u root -p$cf_mariadb_root_password -e "FLUSH PRIVILEGES;"
 # Fix MariaDB login issue when it says - Access denied for user 'root'@'localhost'
 mysql -u root -p$cf_mariadb_root_password -D mysql -e "UPDATE user SET plugin='' WHERE user='root'; FLUSH PRIVILEGES;"
 
 echo ">> Install Redis"
-sudo apt-get install -qq redis-server
+sudo apt-get install -y redis-server
 sudo systemctl start redis-server
 sudo systemctl enable redis-server
 
 echo ">> Install PHP7.0"
-sudo apt-get install -qq php-fpm php-cli php-common php-mbstring php-xml php-curl php-mcrypt php-redis
+sudo apt-get install -y php-fpm php-cli php-common php-mbstring php-xml php-curl php-mcrypt php-pdo php-mysqlnd php-redis
 sudo systemctl start php7.0-fpm
 sudo systemctl enable php7.0-fpm
 
@@ -108,16 +106,19 @@ sudo cp -f /vagrant/script/nginx_vhost.conf /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
 
 echo ">> Create database"
-mysql -u root -p$cf_mariadb_root_password -e "CREATE DATABASE IF NOT EXISTS 'homestead';"
-mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON 'homestead'.* TO 'homestead'@'%' IDENTIFIED BY 'secret';"
-mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON 'homestead'.* TO 'homestead'@'localhost' IDENTIFIED BY 'secret';"
+mysql -u root -p$cf_mariadb_root_password -e "CREATE DATABASE IF NOT EXISTS homestead;"
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON homestead.* TO 'homestead'@'%' IDENTIFIED BY 'secret';"
+mysql -u root -p$cf_mariadb_root_password -e "GRANT ALL ON homestead.* TO 'homestead'@'localhost' IDENTIFIED BY 'secret';"
 
 echo ">> Setup application"
 cd /app/source
-composer install
+composer install -vvv --no-progress --no-suggest --no-scripts
 composer run-script post-root-package-install
 composer run-script post-create-project-cmd
+composer run-script post-install-cmd
+php artisan cache:clear
+php artisan config:clear
 php artisan migrate --force --seed
 
 echo ">> Cleanup"
-sudo apt-get autoremove -qq
+sudo apt-get autoremove -y
