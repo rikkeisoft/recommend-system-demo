@@ -1,0 +1,17 @@
+#header{
+    height: 50px;
+    overflow: hidden;
+}
+.rh-left{
+    width: 230px;
+}
+
+/**
+* OTHER
+*/
+.fl-left{
+    float: left;
+}
+.fl-right{
+    float: right;
+}
