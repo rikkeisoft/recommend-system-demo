@@ -4,8 +4,9 @@
         <title>@yield('title')</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        
         <!--BEGIN INCLUDE CSS-->
+        {{ Html::style('https://fonts.googleapis.com/css?family=Roboto') }}
         {{ Html::style('public/css/app.css') }}
         {{ Html::style('public/css/font-awesome.min.css') }}
         {{ Html::style('public/css/common.css') }}
@@ -15,21 +16,37 @@
     <body>
         <!--BEGIN HEADER-->
         <header id="header">
-            <div class="rh-left fl-left">
-                <a class="btn-menu"><i class="fa fa-reorder"></i></a>
-                <a class="icon">{{ Html::image('public/images/icon.png') }}</a>
-            </div>
-            <div class="rh-right fl-left">
-                {{ Form::open(['url' => '/']) }}
-                {{ Form::text('search_content', old('search_content'), ['placeholder' => 'Search']) }}
-                {{ Form::button('<i class="fa fa-search"></i>', ['type' => 'submit']) }}
-                {{ Form::close() }}
+            <div class="yb-content-base">
+                <div class="yh-container">
+                    <div class="yh-logo">
+                        <a class="btn-menu" href="javascript:void(0);"><i class="fa fa-reorder"></i></a>
+                        <a class="icon" href="javascript:void(0);" title="YouBook">
+                            {{ Html::image('public/images/icon.png', 'YouBook', ['class' => 'img-icon']) }}
+                        </a>
+                    </div>
+                    <div class="yh-content">
+                        {{ Form::open(['url' => '/', 'class' => 'hf-formsearch']) }}
+                        <div class="hf-group">
+                            {{ Form::text('search_content', old('search_content'), ['placeholder' => 'Search', 'class' => 'hi-search-content']) }}
+                            {{ Form::button('<i class="fa fa-search"></i>', ['type' => 'submit', 'class' => 'hbtn-submit']) }}
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+                    <div class="yh-signin right">
+                        <a class="yb-btn hl-signin" href="javascript:void(0);">Sign in</a>
+                    </div>
+                </div>
             </div>
         </header>
+        <div class="yh-clear-offset"></div>
         <!--END HEADER-->
 
         <!--BEGIN MAIN CONTENT-->
-        <div>@yield('content')</div>
+        <div id="main-container">
+            <!--<div class="yb-content-base">-->
+                @yield('content')
+            <!--</div>-->
+        </div>
         <!--END MAIN CONTENT-->
 
         <!--BEGIN FOOTER-->
