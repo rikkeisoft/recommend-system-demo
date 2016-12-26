@@ -25,7 +25,7 @@
                                 </a>
 
                                 <p>
-                                    <a class="yb-cnb-title bold" href="{{ url('detail') }}">Something i need</a>
+                                    <a class="yb-cnb-title bold" href="{{ url('show') }}">Something i need</a>
                                 </p>
 
                                 <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
@@ -42,7 +42,7 @@
                                 </a>
 
                                 <p>
-                                    <a class="yb-cnb-title bold" href="{{ url('detail') }}">Something i need</a>
+                                    <a class="yb-cnb-title bold" href="{{ url('show') }}">Something i need</a>
                                 </p>
 
                                 <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>

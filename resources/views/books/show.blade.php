@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="yb-sg-info fl-left">
-                                <a class="yb-sgb-title bold" href="{{ url('detail') }}">Something i need</a>
+                                <a class="yb-sgb-title bold" href="{{ url('show') }}">Something i need</a>
                                 <a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a>
                                 <p class="yb-cnb-views">69.699 views</p>
                             </div>

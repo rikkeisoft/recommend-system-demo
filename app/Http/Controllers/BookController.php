@@ -27,7 +27,7 @@ class BookController extends Controller
      */
     public function show(Request $request)
     {
-        return view('books.detail');
+        return view('books.show');
     }
 
     /**

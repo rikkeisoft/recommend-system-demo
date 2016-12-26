@@ -20,7 +20,7 @@
                         </div>
 
                         <div class="ybs-info fl-left">
-                            <a class="ybs-title bold" href="{{ url('detail') }}">Something i need</a>
+                            <a class="ybs-title bold" href="{{ url('show') }}">Something i need</a>
                             <a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a>
 
                             <p class="yb-cnb-views">69.699 views</p>
