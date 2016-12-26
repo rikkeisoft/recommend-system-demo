@@ -8,26 +8,30 @@
     <div class="yb-page-container">
         <div class="yb-search-container">
             <div class="ybs-intro">
-                <p class="ybs-result-title right">About 69.999 results</p>
+                <p class="ybs-result-title right">About {{ count($books) }} results</p>
             </div>
-            @for($i = 0; $i < 10; $i++)
-                <section class="ybs-book">
-                    <div class="ybs-content">
-                        <div class="ybs-image fl-left">
-                            <a href="{{ url('detail') }}">
-                                {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybs-book']) }}
-                            </a>
-                        </div>
+            @if(count($books))
+                @foreach($books as $book)
+                    <section class="ybs-book">
+                        <div class="ybs-content">
+                            <div class="ybs-image fl-left">
+                                <a href="{{ url('show/' . $book->id) }}">
+                                    {{ Html::image($book->cover, null, ['class' => 'img-ybs-book']) }}
+                                </a>
+                            </div>
 
-                        <div class="ybs-info fl-left">
-                            <a class="ybs-title bold" href="{{ url('detail') }}">Something i need</a>
-                            <a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a>
+                            <div class="ybs-info fl-left">
+                                <a class="ybs-title bold" href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a>
+                                <a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a>
 
-                            <p class="yb-cnb-views">69.699 views</p>
+                                <p class="yb-cnb-views">1 month ago - {{ $book->views }} views</p>
+                            </div>
                         </div>
-                    </div>
-                </section>
-            @endfor
+                    </section>
+                @endforeach
+            @else
+                <h3 class="center">No results found</h3>
+            @endif
         </div>
     </div>
 @endsection

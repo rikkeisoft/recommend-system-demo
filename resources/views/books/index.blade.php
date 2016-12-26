@@ -17,66 +17,48 @@
                 <h4 class="yb-cn-intro">Recommended</h4>
 
                 <div class="yb-cn-container">
-                    <div class="yb-cn-row">
-                        @for($j = 0; $j < 5; $j++)
-                            <div class="yb-cn-book">
-                                <a href="{{ url('detail') }}">
-                                    {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
-                                </a>
+                    @foreach($recommendBooks as $book)
+                        <div class="yb-cn-book">
+                            <a href="{{ url('show/' . $book->id) }}">
+                                {{ Html::image($book->cover, null, ['class' => 'img-ybcn-book']) }}
+                            </a>
 
-                                <p>
-                                    <a class="yb-cnb-title bold" href="{{ url('detail') }}">Something i need</a>
-                                </p>
+                            <p>
+                                <a class="yb-cnb-title bold"
+                                   href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a>
+                            </p>
 
-                                <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
+                            <p><a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a></p>
 
-                                <p class="yb-cnb-views">69,699 views - 1 month ago</p>
-                            </div>
-                        @endfor
-                    </div>
-                    <div class="yb-cn-row">
-                        @for($j = 0; $j < 5; $j++)
-                            <div class="yb-cn-book">
-                                <a href="{{ url('detail') }}">
-                                    {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
-                                </a>
-
-                                <p>
-                                    <a class="yb-cnb-title bold" href="{{ url('detail') }}">Something i need</a>
-                                </p>
-
-                                <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
-
-                                <p class="yb-cnb-views">69,699 views - 1 month ago</p>
-                            </div>
-                        @endfor
-                    </div>
+                            <p class="yb-cnb-views">{{ $book->views }} views - 1 month ago</p>
+                        </div>
+                    @endforeach
                 </div>
             </section>
-            @for($i = 0; $i < 5; $i++)
+            @foreach($authors as $author)
                 <section class="yb-channel">
-                    <h4 class="yb-cn-intro">Nam Cao</h4>
+                    <h4 class="yb-cn-intro">{{ $author->author }}</h4>
 
                     <div class="yb-cn-container">
                         <div class="yb-cn-row">
-                            @for($j = 0; $j < 5; $j++)
+                            @foreach($author->listBooks as $book)
                                 <div class="yb-cn-book">
-                                    <a href="javascript:void(0);">
-                                        {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
+                                    <a href="{{ url('show/' . $book->id) }}">
+                                        {{ Html::image($book->cover, null, ['class' => 'img-ybcn-book']) }}
                                     </a>
 
-                                    <p><a class="yb-cnb-title bold" href="javascript:void(0);">Something i
-                                            need</a></p>
+                                    <p><a class="yb-cnb-title bold"
+                                          href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a></p>
 
-                                    <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
+                                    <p><a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a></p>
 
-                                    <p class="yb-cnb-views">69,699 views - 1 month ago</p>
+                                    <p class="yb-cnb-views">{{ $book->views }} views - 1 month ago</p>
                                 </div>
-                            @endfor
+                            @endforeach
                         </div>
                     </div>
                 </section>
-            @endfor
+            @endforeach
         </div>
     </div>
 @endsection

@@ -325,10 +325,6 @@ MAIN CONTAINER
 .yb-channel {
     padding: 15px 20px;
     border-bottom: 1px solid #e8e8e8;
-}
-
-.yb-cn-row {
-    margin-bottom: 10px;
     overflow: hidden;
 }
 
@@ -343,9 +339,10 @@ MAIN CONTAINER
     float: left;
     width: 19.2%;
     margin-right: 1%;
+    margin-bottom: 10px;
 }
 
-.yb-cn-book:last-child {
+.yb-cn-book:nth-child(5n + 5) {
     margin-right: 0;
 }
 
