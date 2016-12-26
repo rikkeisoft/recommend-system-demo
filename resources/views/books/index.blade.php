@@ -20,8 +20,8 @@
                     <div class="yb-cn-row">
                         @for($j = 0; $j < 5; $j++)
                             <div class="yb-cn-book">
-                                <a href="{{ url('detail') }}">
-                                    {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
+                                <a href="{{ url('show') }}">
+                                    {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
                                 </a>
 
                                 <p>
@@ -30,15 +30,15 @@
 
                                 <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
 
-                                <p class="yb-cnb-views">69,699 views - 1 month ago</p>
+                                <p class="yb-cnb-views">69.699 views - 1 month ago</p>
                             </div>
                         @endfor
                     </div>
                     <div class="yb-cn-row">
                         @for($j = 0; $j < 5; $j++)
                             <div class="yb-cn-book">
-                                <a href="{{ url('detail') }}">
-                                    {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
+                                <a href="{{ url('show') }}">
+                                    {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
                                 </a>
 
                                 <p>
@@ -47,7 +47,7 @@
 
                                 <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
 
-                                <p class="yb-cnb-views">69,699 views - 1 month ago</p>
+                                <p class="yb-cnb-views">69.699 views - 1 month ago</p>
                             </div>
                         @endfor
                     </div>
@@ -61,16 +61,16 @@
                         <div class="yb-cn-row">
                             @for($j = 0; $j < 5; $j++)
                                 <div class="yb-cn-book">
-                                    <a href="javascript:void(0);">
-                                        {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
+                                    <a href="{{ url('show') }}">
+                                        {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybcn-book']) }}
                                     </a>
 
-                                    <p><a class="yb-cnb-title bold" href="javascript:void(0);">Something i
+                                    <p><a class="yb-cnb-title bold" href="{{ url('show') }}">Something i
                                             need</a></p>
 
                                     <p><a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a></p>
 
-                                    <p class="yb-cnb-views">69,699 views - 1 month ago</p>
+                                    <p class="yb-cnb-views">69.699 views - 1 month ago</p>
                                 </div>
                             @endfor
                         </div>

@@ -10,7 +10,7 @@
             <div class="yb-dt-container">
                 <section class="yb-dt fl-left">
                     <a href="javascript:void(0);">
-                        {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybdt']) }}
+                        {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybdt']) }}
                     </a>
 
                     <div class="yb-dt-info">
@@ -19,7 +19,7 @@
                         <div class="ybdt-if-content">
                             <div class="yb-dt-author fl-left">
                                 <a href="javascript:void(0);" class="fl-left">
-                                    {{ Html::image('public/images/head.png', null, ['class' => 'img-ybdt-author']) }}
+                                    {{ Html::image('images/head.png', null, ['class' => 'img-ybdt-author']) }}
                                 </a>
                                 <a href="javascript:void(0);" class="yb-dt-author-name bold fl-left">Aiflytomydr <i
                                             class="yb-verified center fa fa-check"></i></a>
@@ -53,8 +53,8 @@
                     @for($i = 0; $i < 10; $i++)
                         <div class="yb-sg-book">
                             <div class="yb-sg-image fl-left">
-                                <a href="{{ url('detail') }}">
-                                    {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybsg-book']) }}
+                                <a href="{{ url('show') }}">
+                                    {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybsg-book']) }}
                                 </a>
                             </div>
 

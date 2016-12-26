@@ -14,8 +14,8 @@
                 <section class="ybs-book">
                     <div class="ybs-content">
                         <div class="ybs-image fl-left">
-                            <a href="{{ url('detail') }}">
-                                {{ Html::image('public/images/demo1.jpg', null, ['class' => 'img-ybs-book']) }}
+                            <a href="{{ url('show') }}">
+                                {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybs-book']) }}
                             </a>
                         </div>
 

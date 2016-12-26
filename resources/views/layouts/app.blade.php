@@ -7,9 +7,9 @@
 
     <!--BEGIN INCLUDE CSS-->
     {{ Html::style('https://fonts.googleapis.com/css?family=Roboto') }}
-    {{ Html::style('public/css/app.css') }}
-    {{ Html::style('public/css/font-awesome.min.css') }}
-    {{ Html::style('public/css/common.css') }}
+    {{ Html::style('css/app.css') }}
+    {{ Html::style('css/font-awesome.min.css') }}
+    {{ Html::style('css/common.css') }}
     @yield('css')
     <!--END INCLUDE CSS-->
 </head>
@@ -22,7 +22,7 @@
             <div class="yh-logo">
                 <a class="btn-menu" href="javascript:void(0);"><i class="fa fa-reorder"></i></a>
                 <a class="icon" href="{{ url('/') }}" title="YouBook">
-                    {{ Html::image('public/images/icon.png', 'YouBook', ['class' => 'img-icon']) }}
+                    {{ Html::image('images/icon.png', 'YouBook', ['class' => 'img-icon']) }}
                 </a>
             </div>
             <div class="yh-content">
@@ -93,9 +93,9 @@
 <!--END FOOTER-->
 
 <!--BEGIN INCLUDE SCRIPT-->
-{{ Html::script('public/js/jquery-1.12.4.min.js') }}
-{{ Html::script('public/js/app.js') }}
-{{ Html::script('public/js/common.js') }}
+{{ Html::script('js/jquery-1.12.4.min.js') }}
+{{ Html::script('js/app.js') }}
+{{ Html::script('js/common.js') }}
 @yield('script')
 
 <script>
