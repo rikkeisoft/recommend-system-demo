@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Something i need
+    {{ $book->title }} - YouBook
 @endsection
 
 @section('content')
@@ -10,22 +10,22 @@
             <div class="yb-dt-container">
                 <section class="yb-dt fl-left">
                     <a href="javascript:void(0);">
-                        {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybdt']) }}
+                        {{ Html::image($book->cover, null, ['class' => 'img-ybdt']) }}
                     </a>
 
                     <div class="yb-dt-info">
-                        <h3 class="yb-dt-title">Something i need</h3>
+                        <h3 class="yb-dt-title">{{ $book->title }}</h3>
 
                         <div class="ybdt-if-content">
                             <div class="yb-dt-author fl-left">
                                 <a href="javascript:void(0);" class="fl-left">
                                     {{ Html::image('images/head.png', null, ['class' => 'img-ybdt-author']) }}
                                 </a>
-                                <a href="javascript:void(0);" class="yb-dt-author-name bold fl-left">Aiflytomydr <i
+                                <a href="javascript:void(0);" class="yb-dt-author-name bold fl-left">{{ $book->author }} <i
                                             class="yb-verified center fa fa-check"></i></a>
                             </div>
                             <div class="yb-dt-views fl-right">
-                                69.699 views
+                                {{ $book->views }} views
                             </div>
                         </div>
 
@@ -47,25 +47,10 @@
                         </div>
                     </div>
                 </section>
-                <section class="yb-recommend-layout fl-right">
-                    <h4 class="yb-cn-intro">Recommended</h4>
 
-                    @for($i = 0; $i < 10; $i++)
-                        <div class="yb-sg-book">
-                            <div class="yb-sg-image fl-left">
-                                <a href="{{ url('show') }}">
-                                    {{ Html::image('images/demo1.jpg', null, ['class' => 'img-ybsg-book']) }}
-                                </a>
-                            </div>
-
-                            <div class="yb-sg-info fl-left">
-                                <a class="yb-sgb-title bold" href="{{ url('show') }}">Something i need</a>
-                                <a class="yb-cnb-author" href="javascript:void(0);">Aiflytomydr</a>
-                                <p class="yb-cnb-views">69.699 views</p>
-                            </div>
-                        </div>
-                    @endfor
-                </section>
+                {{--BEGIN RECOMMENDED--}}
+                @include('books._recommended')
+                {{--END RECOMMENDED--}}
             </div>
         </div>
     </div>

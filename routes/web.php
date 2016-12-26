@@ -12,5 +12,5 @@
 */
 
 Route::get('/', 'BookController@index');
-Route::get('show', 'BookController@show');
+Route::get('show/{book}', 'BookController@show');
 Route::get('search', 'BookController@search');
