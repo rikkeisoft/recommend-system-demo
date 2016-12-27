@@ -56,10 +56,9 @@
         <div class="yb-divide"></div>
         <p class="yb-categories-title">CATEGORIES</p>
         <ul class="yb-categories list-unstyled">
-            <li><a href="javascript:void(0);"><span class="fa fa-photo ybc-icon center"></span> Tiểu thuyết</a></li>
-            <li><a href="javascript:void(0);"><span class="fa fa-photo ybc-icon center"></span> Thơ</a></li>
-            <li><a href="javascript:void(0);"><span class="fa fa-photo ybc-icon center"></span> Ngôn tình</a></li>
-            <li><a href="javascript:void(0);"><span class="fa fa-photo ybc-icon center"></span> Truyện</a></li>
+            @foreach($_categories as $category)
+                <li><a href="javascript:void(0);"><span class="fa fa-photo ybc-icon center"></span> {{ $category->name }}</a></li>
+            @endforeach
         </ul>
         <div class="yb-divide"></div>
         <p class="yb-recommend-tt">Hãy đăng nhập ngay bây giờ để xem thông tin của bạn và các đề xuất!</p>
