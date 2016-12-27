@@ -4,6 +4,9 @@
     <title>@yield('title')</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--BEGIN INCLUDE CSS-->
     {{ Html::style('https://fonts.googleapis.com/css?family=Roboto') }}
@@ -13,10 +16,10 @@
     @yield('css')
     <!--END INCLUDE CSS-->
 </head>
-<body>
 
+<body d-url="{{ URL::to('/') }}">
 <!--BEGIN HEADER-->
-<header id="header">
+<header id="header" d-l="{{ Auth::check() ? 1 : 0 }}">
     <div class="yb-content-base">
         <div class="yh-container">
             <div class="yh-logo">
@@ -35,12 +38,32 @@
                 {{ Form::close() }}
             </div>
             <div class="yh-signin right">
-                <a class="yb-btn hl-signin" href="javascript:void(0);">Sign in</a>
+                @if (Auth::guest())
+                    <a class="yb-btn hl-signin" href="{{ url('login') }}">Sign in</a>
+                @else
+                    <ul class="yb-nav list-unstyled">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle yb-u-name yb-u-link" data-toggle="dropdown" 
+                               href="#">{{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="yb-u-logout yb-u-link" href="{{ url('logout') }}"
+                                    onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                @endif
             </div>
         </div>
     </div>
 </header>
-{{--<div class="yh-clear-offset"></div>--}}
 <!--END HEADER-->
 
 <!--BEGIN MAIN CONTENT-->
@@ -61,11 +84,13 @@
             @endforeach
         </ul>
         <div class="yb-divide"></div>
-        <p class="yb-recommend-tt">Hãy đăng nhập ngay bây giờ để xem thông tin của bạn và các đề xuất!</p>
+        @if (Auth::guest())
+            <p class="yb-recommend-tt">Hãy đăng nhập ngay bây giờ để xem thông tin của bạn và các đề xuất!</p>
 
-        <div>
-            <a class="yb-btn hl-signin" href="javascript:void(0);">Sign in</a>
-        </div>
+            <div>
+                <a class="yb-btn hl-signin" href="{{ url('login') }}">Sign in</a>
+            </div>
+        @endif
     </div>
     {{--END SIDEBAR--}}
 

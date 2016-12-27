@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Model\Book;
+use App\Model\Rate;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -33,7 +34,7 @@ class BookController extends Controller
 
         return view('books.index', [
             'recommendBooks' => $this->_recommendBooks,
-            'authors' => $authors,
+            'authors'        => $authors,
         ]);
     }
 
@@ -49,9 +50,14 @@ class BookController extends Controller
             'views' => $book->views + 1,
         ]);
 
+        $rate_avg = auth()->check() ?
+                $book->rates()->where('user_id', auth()->user()->id)
+                        ->avg('point') : 0;
+
         return view('books.show', [
             'recommendBooks' => $this->_recommendBooks,
-            'book' => $book,
+            'book'           => $book,
+            'rate_avg'       => $rate_avg,
         ]);
     }
 
@@ -64,12 +70,43 @@ class BookController extends Controller
     public function search(Request $request)
     {
         $books = Book::where('title', 'LIKE', '%' . $request->search_query . '%')
-            ->orWhere('description', 'LIKE', '%' . $request->search_query . '%')
-            ->orWhere('author', 'LIKE', '%' . $request->search_query . '%')
-            ->get();
+                ->orWhere('description', 'LIKE', '%' . $request->search_query . '%')
+                ->orWhere('author', 'LIKE', '%' . $request->search_query . '%')
+                ->get();
 
         return view('books.search', [
             'books' => $books,
         ]);
     }
+
+    /**
+     * When user rate book
+     * 
+     * @param Request $request
+     * @param Book $book
+     * 
+     * @return Response
+     */
+    public function rate(Request $request, Book $book)
+    {
+        $isRate = $book->rates()->where('user_id', auth()->user()->id)
+                ->where('book_id', $book->id)
+                ->first();
+
+        if (count($isRate)) {
+            $isRate->update(['point' => $request->point]);
+        } else {
+            Rate::create([
+                'user_id' => auth()->user()->id,
+                'book_id' => $book->id,
+                'point'   => $request->point,
+            ]);
+        }
+
+        return response()->json([
+                    'status'   => 1,
+                    'rate_avg' => $book->rates()->avg('point'),
+        ]);
+    }
+
 }

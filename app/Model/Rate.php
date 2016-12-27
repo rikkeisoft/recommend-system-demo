@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Rate extends Model
 {
 
     /**
@@ -13,8 +13,7 @@ class Book extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'author', 'cover', 'category_id',
-        'price', 'description', 'publish_date', 'views',
+        'user_id', 'book_id', 'point',
     ];
 
     /**
@@ -25,13 +24,13 @@ class Book extends Model
     protected $hidden = [];
 
     /**
-     * Relationship with Rate model
+     * Relationship with Book model
      * 
      * @return type
      */
-    public function rates()
+    public function book()
     {
-        return $this->hasMany(Rate::class);
+        return $this->belongsTo(Book::class);
     }
 
 }

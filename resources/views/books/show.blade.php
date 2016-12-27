@@ -30,18 +30,31 @@
                         </div>
 
                         <div class="yb-dt-rates">
+                            <p class="yb-dt-point fl-left">
+                                <span class="yb-rate-value">{{ $book->rates()->avg('point') ? $book->rates()->avg('point') : 0 }}</span>
+                                <i class="fa fa-star icon-rate"></i>
+                            </p>
                             <div class="stars fl-right">
-                                <form action="">
-                                    <input class="star star-5" id="star-5-2" type="radio" name="rate"/>
-                                    <label class="star star-5" for="star-5-2"></label>
-                                    <input class="star star-4" id="star-4-2" type="radio" name="rate"/>
-                                    <label class="star star-4" for="star-4-2"></label>
-                                    <input class="star star-3" id="star-3-2" type="radio" name="rate"/>
-                                    <label class="star star-3" for="star-3-2"></label>
-                                    <input class="star star-2" id="star-2-2" type="radio" name="rate"/>
-                                    <label class="star star-2" for="star-2-2"></label>
-                                    <input class="star star-1" id="star-1-2" type="radio" name="rate"/>
-                                    <label class="star star-1" for="star-1-2"></label>
+                                <?php
+                                    $radioClass = [];
+                                    for($i = 1; $i <= $rate_avg; $i++){
+                                        $radioClass[$i] = 'active';
+                                        if($rate_avg == 1){
+                                            $radioClass[1] = 'active bad';
+                                        }
+                                    }
+                                ?>
+                                <form id="frm-rate" d-book="{{ $book->id }}" action="" class="fl-right">
+                                    <input class="star star-5" id="star-5-2" type="radio" name="rate" value="5"/>
+                                    <label class="star full {{ isset($radioClass[5]) ? $radioClass[5] : '' }}" for="star-5-2"></label>
+                                    <input class="star star-4" id="star-4-2" type="radio" name="rate" value="4"/>
+                                    <label class="star full {{ isset($radioClass[4]) ? $radioClass[4] : '' }}" for="star-4-2"></label>
+                                    <input class="star star-3" id="star-3-2" type="radio" name="rate" value="3"/>
+                                    <label class="star full {{ isset($radioClass[3]) ? $radioClass[3] : '' }}" for="star-3-2"></label>
+                                    <input class="star star-2" id="star-2-2" type="radio" name="rate" value="2"/>
+                                    <label class="star full {{ isset($radioClass[2]) ? $radioClass[2] : '' }}" for="star-2-2"></label>
+                                    <input class="star star-1" id="star-1-2" type="radio" name="rate" value="1"/>
+                                    <label class="star full {{ isset($radioClass[1]) ? $radioClass[1] : '' }}" for="star-1-2"></label>
                                 </form>
                             </div>
                         </div>
