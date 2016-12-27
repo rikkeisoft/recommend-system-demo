@@ -29,8 +29,11 @@
                             </p>
 
                             <p><a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a></p>
-
-                            <p class="yb-cnb-views">{{ $book->views }} views - 1 month ago</p>
+                            
+                            <?php $rateAvg = $book->rates()->avg('point'); ?>
+                            <p class="yb-cnb-views">
+                                <span>{{ $rateAvg ? $rateAvg : 0 }} <i class="fa fa-star icon-rate"></i></span> - {{ $book->views }} views
+                            </p>
                         </div>
                     @endforeach
                 </div>
@@ -51,8 +54,11 @@
                                           href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a></p>
 
                                     <p><a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a></p>
-
-                                    <p class="yb-cnb-views">{{ $book->views }} views - 1 month ago</p>
+                                    
+                                    <?php $rateAvg = $book->rates()->avg('point'); ?>
+                                    <p class="yb-cnb-views">
+                                        <span>{{ $rateAvg ? $rateAvg : 0 }} <i class="fa fa-star icon-rate"></i></span> - {{ $book->views }} views
+                                    </p>
                                 </div>
                             @endforeach
                         </div>

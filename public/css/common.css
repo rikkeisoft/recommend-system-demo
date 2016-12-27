@@ -546,13 +546,13 @@ label.star:before {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 }
 
-.yb-rate-value{
+.yb-rate-value,
+.yb-rate-value > .icon-rate{
     font-size: 18px;
 }
 
 .icon-rate{
     color: #e6b800;
-    font-size: 18px;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 }
 
