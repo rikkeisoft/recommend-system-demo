@@ -96,7 +96,8 @@ class BookController extends Controller
                 ->get();
 
         return view('books.search', [
-            'books' => $books,
+            'books'        => $books,
+            'search_query' => $request->search_query,
         ]);
     }
 

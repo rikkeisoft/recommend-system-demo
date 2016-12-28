@@ -31,7 +31,7 @@
             <div class="yh-content">
                 {{ Form::open(['url' => 'search', 'method' => 'GET', 'class' => 'hf-formsearch', 'enctype' => 'multipart/form-data']) }}
                 <div class="hf-group">
-                    {{ Form::text('search_query', old('search_query'),
+                    {{ Form::text('search_query', isset($search_query) ? $search_query : null,
                     ['placeholder' => 'Search', 'class' => 'hi-search-content']) }}
                     {{ Form::button('<i class="fa fa-search"></i>', ['type' => 'submit', 'class' => 'hbtn-submit']) }}
                 </div>
