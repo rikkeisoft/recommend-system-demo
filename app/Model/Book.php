@@ -25,6 +25,16 @@ class Book extends Model
     protected $hidden = [];
 
     /**
+     * Relationship with Book model
+     * 
+     * @return type
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
      * Relationship with Rate model
      * 
      * @return type
