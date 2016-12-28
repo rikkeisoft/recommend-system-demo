@@ -23,8 +23,11 @@
                             <div class="ybs-info fl-left">
                                 <a class="ybs-title bold" href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a>
                                 <a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a>
-
-                                <p class="yb-cnb-views">1 month ago - {{ $book->views }} views</p>
+                                
+                                <?php $rateAvg = $book->rates()->avg('point'); ?>
+                                <p class="yb-cnb-views">
+                                    <span>{{ $rateAvg ? $rateAvg : 0 }} <i class="fa fa-star icon-rate"></i></span> - {{ $book->views }} views
+                                </p>
                             </div>
                         </div>
                     </section>
