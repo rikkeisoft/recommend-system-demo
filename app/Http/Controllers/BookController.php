@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Model\Book;
 use App\Model\Rate;
+use App\Model\Category;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -58,6 +58,27 @@ class BookController extends Controller
             'recommendBooks' => $this->_recommendBooks,
             'book'           => $book,
             'rate_avg'       => $rate_avg,
+        ]);
+    }
+
+    /**
+     * Get list book by category
+     * 
+     * @param Request $request
+     * @param Category $category
+     * @return type
+     */
+    public function getListBookByCategory(Request $request, Category $category)
+    {
+        $authors = $category->books()->groupBy('author')->get();
+
+        foreach ($authors as $author) {
+            $author->listBooks = Book::where('author', $author->author)->get();
+        }
+
+        return view('books.books_by_category', [
+            'category' => $category,
+            'authors'  => $authors,
         ]);
     }
 

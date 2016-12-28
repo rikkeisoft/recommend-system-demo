@@ -14,6 +14,7 @@
 Auth::routes();
 Route::get('/', 'BookController@index');
 Route::get('show/{book}', 'BookController@show');
+Route::get('category/{category}', 'BookController@getListBookByCategory');
 Route::get('search', 'BookController@search');
 Route::post('rate/{book}', 'BookController@rate');
 
