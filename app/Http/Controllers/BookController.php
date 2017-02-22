@@ -6,22 +6,10 @@ use App\Model\Book;
 use App\Model\Rate;
 use App\Model\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
-
-    /**
-     * Construct
-     */
-    public function __construct()
-    {
-        $this->_recommendBooks = [];
-        $books                 = Book::all();
-
-        if (count($books)) {
-            $this->_recommendBooks = $books->random(10);
-        }
-    }
 
     /**
      * Book list
@@ -32,6 +20,15 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
+        // RECOMMENDATION
+        $userRateAvg = $this->__getUserRateAvg();
+
+        if ($userRateAvg) {
+            $recommended = $this->__recommendedForUser(null, $userRateAvg);
+        } else {
+            $recommended = $this->__recommendedForGuest();
+        }
+
         $authors = Book::groupBy('author')->get();
 
         foreach ($authors as $author) {
@@ -39,7 +36,7 @@ class BookController extends Controller
         }
 
         return view('books.index', [
-            'recommendBooks' => $this->_recommendBooks,
+            'recommendBooks' => $recommended,
             'authors'        => $authors,
         ]);
     }
@@ -47,7 +44,8 @@ class BookController extends Controller
     /**
      * View book detail
      *
-     * @param Request $request
+     * @param Request $request Request
+     * @param Book    $book    Book object
      *
      * @return type
      */
@@ -62,10 +60,16 @@ class BookController extends Controller
                 ->avg('point') : 0;
 
         // RECOMMENDATION
+        $userRateAvg = $this->__getUserRateAvg();
 
+        if ($userRateAvg) {
+            $recommended = $this->__recommendedForUser($book, $userRateAvg);
+        } else {
+            $recommended = $this->__recommendedForGuest($book);
+        }
 
         return view('books.show', [
-            'recommendBooks' => $this->_recommendBooks,
+            'recommendBooks' => $recommended,
             'book'           => $book,
             'rate_avg'       => $rate_avg,
         ]);
@@ -143,4 +147,147 @@ class BookController extends Controller
         ]);
     }
 
+    /**
+     * Check user interact with system or not
+     *
+     * @return bool
+     */
+    private function __getUserRateAvg()
+    {
+        if (auth()->check()) {
+            $userRateAvg = Rate::select(DB::raw('AVG(point) as rate_avg'))
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($userRateAvg->rate_avg) {
+                return $userRateAvg->rate_avg;
+            }
+
+            return 0;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get top 10 books have most views or rates
+     *
+     * @param Book $bookDetail The book is showing => get top 10 books have the same properties with the book
+     *
+     * @return Array
+     */
+
+    private function __recommendedForGuest($bookDetail = null)
+    {
+        // Get top 10 books have most rates
+        $topRates = Book::select('books.*', DB::raw('AVG(rates.point) as rate_avg'))
+            ->join('rates', 'books.id', '=', 'rates.book_id');
+
+        if (!is_null($bookDetail)) {
+            $topRates = $topRates->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                ->orWhere('category_id', '=', $bookDetail->category_id);
+        }
+
+        $topRates = $topRates->groupBy('books.id')
+            ->orderBy('rate_avg', 'DESC')
+            ->limit(10)
+            ->get();
+
+        // Get top 10 books have most views
+        $topRatesIds = $topRates->pluck('id')->toArray();
+
+        $topViews = Book::whereNotIn('id', $topRatesIds);
+
+        if (!is_null($bookDetail)) {
+            $topViews = $topRates->where('books.id', '<>', $bookDetail->id)
+                ->where(function ($query) use ($bookDetail) {
+                    $query->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                        ->orWhere('category_id', '=', $bookDetail->category_id);
+                });
+        }
+
+        $topViews = $topViews->orderBy('views')
+            ->limit(10)
+            ->get();
+
+        // Merge top 10 rates with top 10 views => return 10 books random
+        $recommended = $topRates->merge($topViews);
+
+        return (count($recommended) > 10)
+            ? $recommended->random(10) : $recommended;
+    }
+
+    /**
+     * Get top 10 books have most views or rates when user logged
+     *
+     * @param Book  $bookDetail  The book is showing => get top 10 books have the same properties with the book
+     * @param Float $userRateAvg User rate avg
+     *
+     * @return Array
+     */
+    private function __recommendedForUser($bookDetail = null, $userRateAvg)
+    {
+        $authId = auth()->user()->id;
+
+        // Get top 10 books have most rates by Auth
+        $topBooksVotedByAuth = Book::select('books.*', DB::raw('AVG(rates.point) as rate_avg'))
+            ->join('rates', 'books.id', '=', 'rates.book_id')
+            ->where('rates.user_id', '=', $authId)
+            ->groupBy('books.id')
+            ->orderBy('rate_avg', 'DESC')
+            ->having('rate_avg', '>=', $userRateAvg)
+            ->limit(10)
+            ->get();
+
+        // List Books Id of Auth interact
+        $listBooksIdVotedByAuth = $topBooksVotedByAuth->pluck('id')->toArray();
+
+        // Get list another users id interact with $topBooksVotedByAuth
+        $listAnotherUsersId = Rate::whereIn('book_id', $listBooksIdVotedByAuth)
+            ->distinct('user_id')
+            ->pluck('user_id')
+            ->toArray();
+
+        // Get top 10 books have most rates suggest for Auth
+        $topRates = Book::select('books.*', DB::raw('AVG(rates.point) as rate_avg'))
+            ->join('rates', 'books.id', '=', 'rates.book_id')
+            ->whereIn('rates.user_id', $listAnotherUsersId);
+
+        if (!is_null($bookDetail)) {
+            $topRates = $topRates->where('books.id', '<>', $bookDetail->id)
+                ->where(function ($query) use ($bookDetail) {
+                    $query->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                        ->orWhere('category_id', '=', $bookDetail->category_id);
+                });
+        }
+
+        $topRates = $topRates->groupBy('books.id')
+            ->where('rates.point', '>=', $userRateAvg)
+            ->orderBy('rate_avg', 'DESC')
+            ->limit(10)
+            ->get();
+
+        // Get top 10 books have most views by Auth
+        $topRatesIds = $topRates->pluck('id')->toArray();
+
+        $topViews = Book::select('books.*')
+            ->join('rates', 'books.id', '=', 'rates.book_id')
+            ->whereNotIn('books.id', $topRatesIds)
+            ->whereIn('rates.user_id', $listAnotherUsersId);
+
+        if (!is_null($bookDetail)) {
+            $topViews = $topViews->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                ->orWhere('category_id', '=', $bookDetail->category_id);
+        }
+
+        $topViews = $topViews->orderBy('views')
+            ->limit(10)
+            ->get();
+
+        // Merge top 10 rates with top 10 views => return 10 books random
+        $recommended = $topRates->merge($topViews);
+
+        return (count($recommended) > 10)
+            ? $recommended->random(10) : $recommended;
+    }
 }

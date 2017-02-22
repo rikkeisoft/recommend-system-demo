@@ -27,6 +27,7 @@ class BooksTableSeeder extends Seeder
                 'price'       => $faker->randomFloat(2, 10000, 1000000),
                 'cover'       => 'images/cover' . rand(1, 14) . '.jpg',
                 'category_id' => $faker->randomElement($categories),
+                'views'       => rand(0, 1000),
             ]);
         }
     }

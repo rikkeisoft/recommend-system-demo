@@ -73,8 +73,8 @@
         <ul class="yb-menu list-unstyled">
             <li class="active"><a href="{{ url('/') }}"><span class="fa fa-home ybsb-icon center"></span> Home</a>
             </li>
-            <li><a href="javascript:void(0);"><span class="fa fa-thermometer-full ybsb-icon center"></span> Featured</a>
-            </li>
+            {{--<li><a href="javascript:void(0);"><span class="fa fa-thermometer-full ybsb-icon center"></span> Featured</a>--}}
+            {{--</li>--}}
         </ul>
         <div class="yb-divide"></div>
         @if(count($_categories))

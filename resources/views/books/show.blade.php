@@ -31,7 +31,8 @@
 
                         <div class="yb-dt-rates">
                             <p class="yb-dt-point fl-left">
-                                <span class="yb-rate-value">{{ $book->rates()->avg('point') ? $book->rates()->avg('point') : 0 }}</span>
+                                <?php $rateAvg = $book->rates()->avg('point'); ?>
+                                <span class="yb-rate-value">{{ $rateAvg ? round($rateAvg, 2) : 0 }}</span>
                                 <i class="fa fa-star icon-rate"></i>
                             </p>
                             <div class="stars fl-right">
