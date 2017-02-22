@@ -4,17 +4,17 @@
     <title>@yield('title')</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--BEGIN INCLUDE CSS-->
-    {{ Html::style('https://fonts.googleapis.com/css?family=Roboto') }}
-    {{ Html::style('css/app.css') }}
-    {{ Html::style('css/font-awesome.min.css') }}
-    {{ Html::style('css/common.css') }}
-    @yield('css')
-    <!--END INCLUDE CSS-->
+{{ Html::style('https://fonts.googleapis.com/css?family=Roboto') }}
+{{ Html::style('css/app.css') }}
+{{ Html::style('css/font-awesome.min.css') }}
+{{ Html::style('css/common.css') }}
+@yield('css')
+<!--END INCLUDE CSS-->
 </head>
 
 <body d-url="{{ URL::to('/') }}">
@@ -31,7 +31,7 @@
             <div class="yh-content">
                 {{ Form::open(['url' => 'search', 'method' => 'GET', 'class' => 'hf-formsearch', 'enctype' => 'multipart/form-data']) }}
                 <div class="hf-group">
-                    {{ Form::text('search_query', old('search_query'),
+                    {{ Form::text('search_query', isset($search_query) ? $search_query : null,
                     ['placeholder' => 'Search', 'class' => 'hi-search-content']) }}
                     {{ Form::button('<i class="fa fa-search"></i>', ['type' => 'submit', 'class' => 'hbtn-submit']) }}
                 </div>
@@ -43,18 +43,18 @@
                 @else
                     <ul class="yb-nav list-unstyled">
                         <li class="dropdown">
-                            <a class="dropdown-toggle yb-u-name yb-u-link" data-toggle="dropdown" 
+                            <a class="dropdown-toggle yb-u-name yb-u-link" data-toggle="dropdown"
                                href="#">{{ Auth::user()->name }} <span class="caret"></span>
                             </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="yb-u-logout yb-u-link" href="{{ url('logout') }}"
-                                    onclick="event.preventDefault();
+                            <ul class="dropdown-menu">
+                                <li><a class="yb-u-logout yb-u-link" href="{{ url('logout') }}"
+                                       onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-                            </li>
-                        </ul>
-                      </li>
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                     <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                         {{ csrf_field() }}
@@ -77,13 +77,16 @@
             </li>
         </ul>
         <div class="yb-divide"></div>
-        <p class="yb-categories-title">CATEGORIES</p>
-        <ul class="yb-categories list-unstyled">
-            @foreach($_categories as $category)
-                <li><a href="{{ url('category/' . $category->id) }}"><span class="fa fa-photo ybc-icon center"></span> {{ $category->name }}</a></li>
-            @endforeach
-        </ul>
-        <div class="yb-divide"></div>
+        @if(count($_categories))
+            <p class="yb-categories-title">CATEGORIES</p>
+            <ul class="yb-categories list-unstyled">
+                @foreach($_categories as $category)
+                    <li><a href="{{ url('category/' . $category->id) }}"><span
+                                    class="fa fa-photo ybc-icon center"></span> {{ $category->name }}</a></li>
+                @endforeach
+            </ul>
+            <div class="yb-divide"></div>
+        @endif
         @if (Auth::guest())
             <p class="yb-recommend-tt">Hãy đăng nhập ngay bây giờ để xem thông tin của bạn và các đề xuất!</p>
 
@@ -123,7 +126,7 @@
 @yield('script')
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         Common.init();
     });
 </script>

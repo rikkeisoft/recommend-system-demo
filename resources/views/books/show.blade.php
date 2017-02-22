@@ -8,7 +8,7 @@
     <div class="yb-page-container">
         <div class="yb-page-content">
             <div class="yb-dt-container">
-                <section class="yb-dt fl-left">
+                <section class="yb-dt">
                     <a href="javascript:void(0);">
                         {{ Html::image($book->cover, null, ['class' => 'img-ybdt']) }}
                     </a>

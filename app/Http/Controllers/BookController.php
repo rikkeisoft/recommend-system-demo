@@ -15,13 +15,19 @@ class BookController extends Controller
      */
     public function __construct()
     {
-        $this->_recommendBooks = Book::all()->random(10);
+        $this->_recommendBooks = [];
+        $books                 = Book::all();
+
+        if (count($books)) {
+            $this->_recommendBooks = $books->random(10);
+        }
     }
 
     /**
      * Book list
      *
      * @param Request $request
+     *
      * @return type
      */
     public function index(Request $request)
@@ -42,6 +48,7 @@ class BookController extends Controller
      * View book detail
      *
      * @param Request $request
+     *
      * @return type
      */
     public function show(Request $request, Book $book)
@@ -51,8 +58,11 @@ class BookController extends Controller
         ]);
 
         $rate_avg = auth()->check() ?
-                $book->rates()->where('user_id', auth()->user()->id)
-                        ->avg('point') : 0;
+            $book->rates()->where('user_id', auth()->user()->id)
+                ->avg('point') : 0;
+
+        // RECOMMENDATION
+
 
         return view('books.show', [
             'recommendBooks' => $this->_recommendBooks,
@@ -63,9 +73,10 @@ class BookController extends Controller
 
     /**
      * Get list book by category
-     * 
-     * @param Request $request
+     *
+     * @param Request  $request
      * @param Category $category
+     *
      * @return type
      */
     public function getListBookByCategory(Request $request, Category $category)
@@ -86,33 +97,35 @@ class BookController extends Controller
      * Search book
      *
      * @param Request $request
+     *
      * @return type
      */
     public function search(Request $request)
     {
         $books = Book::where('title', 'LIKE', '%' . $request->search_query . '%')
-                ->orWhere('description', 'LIKE', '%' . $request->search_query . '%')
-                ->orWhere('author', 'LIKE', '%' . $request->search_query . '%')
-                ->get();
+            ->orWhere('description', 'LIKE', '%' . $request->search_query . '%')
+            ->orWhere('author', 'LIKE', '%' . $request->search_query . '%')
+            ->get();
 
         return view('books.search', [
-            'books' => $books,
+            'books'        => $books,
+            'search_query' => $request->search_query,
         ]);
     }
 
     /**
      * When user rate book
-     * 
+     *
      * @param Request $request
-     * @param Book $book
-     * 
+     * @param Book    $book
+     *
      * @return Response
      */
     public function rate(Request $request, Book $book)
     {
         $isRate = $book->rates()->where('user_id', auth()->user()->id)
-                ->where('book_id', $book->id)
-                ->first();
+            ->where('book_id', $book->id)
+            ->first();
 
         if (count($isRate)) {
             $isRate->update(['point' => $request->point]);
@@ -125,8 +138,8 @@ class BookController extends Controller
         }
 
         return response()->json([
-                    'status'   => 1,
-                    'rate_avg' => $book->rates()->avg('point'),
+            'status'   => 1,
+            'rate_avg' => $book->rates()->avg('point'),
         ]);
     }
 
