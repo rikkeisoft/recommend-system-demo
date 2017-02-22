@@ -1,6 +1,12 @@
 /**
 * COMMON
 */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     background: #fff;
@@ -102,6 +108,10 @@ a:active {
 
 #backtotop:hover {
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -3px -3px 10px rgba(0, 0, 0, 1);
+}
+
+.block{
+    display: block;
 }
 
 /**
@@ -353,6 +363,13 @@ MAIN CONTAINER
     overflow: hidden;
 }
 
+.yb-cn-container{
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
 .yb-cn-intro {
     margin-top: 0;
     font-size: 15px;
@@ -361,14 +378,9 @@ MAIN CONTAINER
 }
 
 .yb-cn-book {
-    float: left;
-    width: 19.2%;
-    margin-right: 1%;
-    margin-bottom: 10px;
-}
-
-.yb-cn-book:nth-child(5n + 5) {
-    margin-right: 0;
+    width: calc(20% - 10px);
+    overflow: hidden;
+    margin: 0 5px 10px 5px;
 }
 
 .yb-cn-book > p {
@@ -385,8 +397,12 @@ MAIN CONTAINER
 .yb-cnb-title:focus,
 .yb-cnb-title:visited,
 .yb-cnb-title {
+    width: 100%;
     color: #1263a1;
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .yb-cnb-title:hover,
@@ -410,6 +426,7 @@ MAIN CONTAINER
 .yb-dt-container {
     background: #ccc;
     overflow: hidden;
+    display: flex;
 }
 
 .yb-dt {
@@ -560,14 +577,15 @@ label.star:before {
 * RECOMMEND
 */
 .yb-recommend-layout {
-    width: 38%;
+    width: calc(40% - 20px);
+    margin-left: 20px;
     padding: 15px;
     background: #fff;
 }
 
 .yb-sg-book {
-    overflow: hidden;
-    margin-bottom: 15px;
+    display: flex;
+    margin-bottom: 10px;
 }
 
 .yb-sg-image {
@@ -580,6 +598,7 @@ label.star:before {
 }
 
 .yb-sg-info {
+    width: calc(60% - 10px);
     margin-left: 10px;
 }
 
@@ -622,6 +641,10 @@ label.star:before {
     margin-bottom: 20px;
 }
 
+.ybs-content{
+    display: flex;
+}
+
 .ybs-image{
     width: 35%;
 }
@@ -632,6 +655,7 @@ label.star:before {
 }
 
 .ybs-info{
+    width: calc(65% - 15px);
     margin-left: 15px;
 }
 

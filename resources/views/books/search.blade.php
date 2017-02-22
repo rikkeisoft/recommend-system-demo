@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ old('search_query') }} - YouBook
+    {{ isset($search_query) ? $search_query . ' -' : '' }} YouBook
 @endsection
 
 @section('content')
@@ -14,13 +14,13 @@
                 @foreach($books as $book)
                     <section class="ybs-book">
                         <div class="ybs-content">
-                            <div class="ybs-image fl-left">
+                            <div class="ybs-image">
                                 <a href="{{ url('show/' . $book->id) }}">
                                     {{ Html::image($book->cover, null, ['class' => 'img-ybs-book']) }}
                                 </a>
                             </div>
 
-                            <div class="ybs-info fl-left">
+                            <div class="ybs-info">
                                 <a class="ybs-title bold" href="{{ url('show/' . $book->id) }}">{{ $book->title }}</a>
                                 <a class="yb-cnb-author" href="javascript:void(0);">{{ $book->author }}</a>
                                 
