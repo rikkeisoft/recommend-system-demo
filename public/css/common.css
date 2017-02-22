@@ -665,3 +665,10 @@ label.star:before {
 .auth-link-forgot-pwd:active{
     color: #216a94 !important;
 }
+
+/**
+* OTHER
+ */
+.yb-empty-content{
+    padding: 50px 0;
+}
