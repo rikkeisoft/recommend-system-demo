@@ -26,4 +26,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Relationship with Rate model
+     *
+     * @return type
+     */
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
 }

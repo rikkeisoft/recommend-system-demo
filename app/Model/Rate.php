@@ -25,7 +25,7 @@ class Rate extends Model
 
     /**
      * Relationship with Book model
-     * 
+     *
      * @return type
      */
     public function book()
@@ -33,4 +33,13 @@ class Rate extends Model
         return $this->belongsTo(Book::class);
     }
 
+    /**
+     * Relationship with User model
+     *
+     * @return type
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -15,7 +15,7 @@
                 
                 <?php $rateAvg = $book->rates()->avg('point'); ?>
                 <p class="yb-cnb-views">
-                    <span>{{ $rateAvg ? $rateAvg : 0 }} <i class="fa fa-star icon-rate"></i></span> - {{ $book->views }} views
+                    <span>{{ $rateAvg ? round($rateAvg, 2) : 0 }} <i class="fa fa-star icon-rate"></i></span> - {{ $book->views }} views
                 </p>
             </div>
         </div>
