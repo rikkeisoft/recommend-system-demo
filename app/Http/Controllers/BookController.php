@@ -16,7 +16,7 @@ class BookController extends Controller
     public function __construct()
     {
         $this->_recommendBooks = [];
-        $books = Book::all();
+        $books                 = Book::all();
 
         if (count($books)) {
             $this->_recommendBooks = $books->random(10);
@@ -27,6 +27,7 @@ class BookController extends Controller
      * Book list
      *
      * @param Request $request
+     *
      * @return type
      */
     public function index(Request $request)
@@ -39,7 +40,7 @@ class BookController extends Controller
 
         return view('books.index', [
             'recommendBooks' => $this->_recommendBooks,
-            'authors' => $authors,
+            'authors'        => $authors,
         ]);
     }
 
@@ -47,6 +48,7 @@ class BookController extends Controller
      * View book detail
      *
      * @param Request $request
+     *
      * @return type
      */
     public function show(Request $request, Book $book)
@@ -59,18 +61,22 @@ class BookController extends Controller
             $book->rates()->where('user_id', auth()->user()->id)
                 ->avg('point') : 0;
 
+        // RECOMMENDATION
+
+
         return view('books.show', [
             'recommendBooks' => $this->_recommendBooks,
-            'book' => $book,
-            'rate_avg' => $rate_avg,
+            'book'           => $book,
+            'rate_avg'       => $rate_avg,
         ]);
     }
 
     /**
      * Get list book by category
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Category $category
+     *
      * @return type
      */
     public function getListBookByCategory(Request $request, Category $category)
@@ -83,7 +89,7 @@ class BookController extends Controller
 
         return view('books.books_by_category', [
             'category' => $category,
-            'authors' => $authors,
+            'authors'  => $authors,
         ]);
     }
 
@@ -91,6 +97,7 @@ class BookController extends Controller
      * Search book
      *
      * @param Request $request
+     *
      * @return type
      */
     public function search(Request $request)
@@ -101,7 +108,7 @@ class BookController extends Controller
             ->get();
 
         return view('books.search', [
-            'books' => $books,
+            'books'        => $books,
             'search_query' => $request->search_query,
         ]);
     }
@@ -110,7 +117,7 @@ class BookController extends Controller
      * When user rate book
      *
      * @param Request $request
-     * @param Book $book
+     * @param Book    $book
      *
      * @return Response
      */
@@ -126,12 +133,12 @@ class BookController extends Controller
             Rate::create([
                 'user_id' => auth()->user()->id,
                 'book_id' => $book->id,
-                'point' => $request->point,
+                'point'   => $request->point,
             ]);
         }
 
         return response()->json([
-            'status' => 1,
+            'status'   => 1,
             'rate_avg' => $book->rates()->avg('point'),
         ]);
     }
