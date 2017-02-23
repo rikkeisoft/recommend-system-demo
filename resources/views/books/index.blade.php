@@ -6,10 +6,10 @@
 
 @section('content')
 
-    <ul class="yb-page-menu list-unstyled center">
-        <li><a class="active" href="javascript:void(0);">Home</a></li>
-        <li><a href="javascript:void(0);">Featured</a></li>
-    </ul>
+    {{--<ul class="yb-page-menu list-unstyled center">--}}
+        {{--<li><a class="active" href="javascript:void(0);">Home</a></li>--}}
+        {{--<li><a href="javascript:void(0);">Featured</a></li>--}}
+    {{--</ul>--}}
 
     <div class="yb-page-container">
         <div class="yb-page-content">
