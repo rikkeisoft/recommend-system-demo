@@ -209,7 +209,7 @@ class BookController extends Controller
                 });
         }
 
-        $topViews = $topViews->orderBy('views')
+        $topViews = $topViews->orderBy('views', 'DESC')
             ->limit(10)
             ->get();
 
@@ -286,7 +286,7 @@ class BookController extends Controller
                 });
         }
 
-        $topViews = $topViews->orderBy('views')
+        $topViews = $topViews->orderBy('views', 'DESC')
             ->limit(10)
             ->get();
 
