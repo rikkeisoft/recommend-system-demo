@@ -348,13 +348,13 @@ MAIN CONTAINER
 }
 
 .yb-page-container {
-    background: #f2f2f2;
+    background: #ccc;
     padding: 11px 30px 40px;
 }
 
 .yb-page-content {
-    background: #fff;
-    box-shadow: -1px 0 8px rgba(140, 140, 140, 0.2);
+    /*background: #fff;*/
+    /*box-shadow: -1px 0 8px rgba(140, 140, 140, 0.2);*/
 }
 
 .yb-channel {
@@ -424,7 +424,7 @@ MAIN CONTAINER
 * PAGE DETAIL
 */
 .yb-dt-container {
-    background: #ccc;
+    /*background: #ccc;*/
     overflow: hidden;
     display: flex;
 }
