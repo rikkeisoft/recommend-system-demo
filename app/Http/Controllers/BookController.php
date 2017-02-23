@@ -199,7 +199,7 @@ class BookController extends Controller
         $topViews = Book::whereNotIn('id', $topRatesIds);
 
         if (!is_null($bookDetail)) {
-            $topViews = $topRates->where('books.id', '<>', $bookDetail->id)
+            $topViews = $topViews->where('books.id', '<>', $bookDetail->id)
                 ->where(function ($query) use ($bookDetail) {
                     $query->where('author', 'LIKE', '%' . $bookDetail->author . '%')
                         ->orWhere('category_id', '=', $bookDetail->category_id);
