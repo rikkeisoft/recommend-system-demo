@@ -64,7 +64,7 @@ var Common = function () {
                     }
                     _self.siblings('input.star:checked ~ label.star').addClass(_clsActive);
 
-                    $('.yb-rate-value').text(response.rate_avg ? response.rate_avg : 0);
+                    $('.yb-rate-value').text(response.rate_avg ? Number((response.rate_avg).toFixed(2)) : 0);
                 }
             });
         });
