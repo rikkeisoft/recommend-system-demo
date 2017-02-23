@@ -184,8 +184,11 @@ class BookController extends Controller
             ->join('rates', 'books.id', '=', 'rates.book_id');
 
         if (!is_null($bookDetail)) {
-            $topRates = $topRates->where('author', 'LIKE', '%' . $bookDetail->author . '%')
-                ->orWhere('category_id', '=', $bookDetail->category_id);
+            $topRates = $topRates->where('books.id', '<>', $bookDetail->id)
+                ->where(function ($query) use ($bookDetail) {
+                    $query->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                        ->orWhere('category_id', '=', $bookDetail->category_id);
+                });
         }
 
         $topRates = $topRates->groupBy('books.id')
@@ -276,8 +279,11 @@ class BookController extends Controller
             ->whereIn('rates.user_id', $listAnotherUsersId);
 
         if (!is_null($bookDetail)) {
-            $topViews = $topViews->where('author', 'LIKE', '%' . $bookDetail->author . '%')
-                ->orWhere('category_id', '=', $bookDetail->category_id);
+            $topViews = $topViews->where('books.id', '<>', $bookDetail->id)
+                ->where(function ($query) use ($bookDetail) {
+                    $query->where('author', 'LIKE', '%' . $bookDetail->author . '%')
+                        ->orWhere('category_id', '=', $bookDetail->category_id);
+                });
         }
 
         $topViews = $topViews->orderBy('views')
